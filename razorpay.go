@@ -211,9 +211,9 @@ func (r *RazorPay) CreateOrder(order NewOrder) (*Order, error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	resp, err := r.call("CreateOrder", createreqjson, nil, nil)
+	resp, err := r.call("CreateOrder", createreqjson, "", nil)
 	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
+	return orderresp, err
 }
 
 //GetPaymentByID Retrieve a Payment by ID
@@ -221,7 +221,7 @@ func (r *RazorPay) GetPaymentByID(id string) (*Payment, error) {
 	paymentresp := new(Payment)
 	resp, err := r.call("GetPaymentByID", nil, id, nil)
 	json.Unmarshal(resp, paymentresp)
-	return paymentresp, nil
+	return paymentresp, err
 }
 
 func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
