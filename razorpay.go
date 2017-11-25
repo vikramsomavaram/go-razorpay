@@ -2,10 +2,10 @@ package razorpay
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -17,8 +17,9 @@ const (
 
 //RazorPay ...
 type RazorPay struct {
-	apikey    string
-	apisecret string
+	apikey     string //rzp_test_eq0OycgzlfwDIs
+	apisecret  string //vt9YFHVw8EgMb2phcKz9SZjd
+	merchantID string
 }
 
 //Payments ...
@@ -105,73 +106,145 @@ type Orders struct {
 	Items  []Order `json:"items"`
 }
 
-//NewRazorPay creates new instance of client
-func NewRazorPay(APIKey string, apisecret string) *RazorPay {
-	return &RazorPay{apikey: APIKey}
+//New creates new instance of client
+func New(APIKey string, apiSecret string) *RazorPay {
+	return &RazorPay{apikey: APIKey, apisecret: apiSecret}
 }
 
+/*
 //GetPayments Retrieve multiple payments
 func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) []Payment {
-	return payments
+	paymentresp := new(Payment)
+	resp, err := r.call("GetPayments", nil, urlparams)
+	json.Unmarshal(resp, paymentresp)
+	return paymentresp, nil
 }
 
-//GetPaymentByID Retrieve a Payment by ID
-func (r *RazorPay) GetPaymentByID(ID string) {
 
-}
 
 //CapturePayment Capture a payment
-func (r *RazorPay) CapturePayment() {
-
+func (r *RazorPay) CapturePayment() (*Payment, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	resp, err := r.call("CreateOrder", createreqjson, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
 //Refund issue refund
-func (r *RazorPay) Refund() {
-
+func (r *RazorPay) Refund() (*Refund, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	resp, err := r.call("CreateOrder", createreqjson, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
 //GetRefundsByPaymentID Retrieve multiple refunds of a payment
-func (r *RazorPay) GetRefundsByPaymentID() {
-
+func (r *RazorPay) GetRefundsByPaymentID(id string) (*Refunds, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	resp, err := r.call("CreateOrder", createreqjson, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
-func (r *RazorPay) GetRefundByPaymentID() {
-
+func (r *RazorPay) GetRefundByPaymentID(id string) (*Refund, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	resp, err := r.call("CreateOrder", createreqjson, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
-func (r *RazorPay) GetRefunds() {
-
+func (r *RazorPay) GetRefunds() (*Refunds, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	resp, err := r.call("CreateOrder", createreqjson, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
-func (r *RazorPay) GetRefundByID() {
-
+func (r *RazorPay) GetRefundByID(id string) (*Refund, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	resp, err := r.call("CreateOrder", createreqjson, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
-func (r *RazorPay) CreateOrder() {
 
+func (r *RazorPay) GetOrders() (*Order, error) {
+	orderresp := new(Order)
+	resp, err := r.call("GetOrders", nil, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
-func (r *RazorPay) GetOrders() {
+func (r *RazorPay) GetOrderByID() (*Order, error) {
+	orderresp := new(Order)
+	resp, err := r.call("GetOrderByID", nil, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
+}
+*/
 
+type NewOrder struct {
+	Amount         int    `json:"amount"`
+	Currency       string `json:"currency"`
+	Receipt        string `json:"receipt"`
+	PaymentCapture bool   `json:"payment_capture"`
+	Notes          string `json:"notes"`
 }
 
-func (r *RazorPay) GetOrderByID() {
-
+//CreateOrder Create an order
+func (r *RazorPay) CreateOrder(order NewOrder) (*Order, error) {
+	orderresp := new(Order)
+	orderreq := order
+	createreqjson, err := json.Marshal(&orderreq)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	resp, err := r.call("CreateOrder", createreqjson, nil, nil)
+	json.Unmarshal(resp, orderresp)
+	return orderresp, nil
 }
 
-func (r *RazorPay) call(operation string, reqbody []byte) ([]byte, error) {
+//GetPaymentByID Retrieve a Payment by ID
+func (r *RazorPay) GetPaymentByID(id string) (*Payment, error) {
+	paymentresp := new(Payment)
+	resp, err := r.call("GetPaymentByID", nil, id, nil)
+	json.Unmarshal(resp, paymentresp)
+	return paymentresp, nil
+}
+
+func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
 	var rurl string
+	var rmethod string
 	switch operation {
 	case "CreateOrder":
+		rmethod = "POST"
 		rurl = APIURL + "orders"
+	case "GetPaymentByID":
+		rmethod = "GET"
+		rurl = APIURL + "payments/" + pathparams
 	default:
-		err := errors.New("Invalid Operation, Must one of OTP,AUTH,KYC or BFD")
+		err := errors.New("Invalid Method/Operation")
 		return nil, err
 	}
 	log.Debugln("[Razopay] Request URL:", rurl)
-	log.Debug("[Razopay] Request Body:", string(reqbody))
-	req, err := http.NewRequest("POST", rurl, bytes.NewBuffer(reqbody))
-	req.Header.Add("Content-Type", "text/xml")
+	log.Debugln("[Razopay] Path Params:", pathparams)
+	log.Debugln("[Razopay] Query Params:", queryparams)
+	log.Debugln("[Razopay] Request Body:", string(reqbody))
+	req, err := http.NewRequest(rmethod, rurl, bytes.NewBuffer(reqbody))
+	req.SetBasicAuth(r.apikey, r.apisecret)
+	req.Header.Add("Content-Type", "application/json")
 	if err != nil {
 		log.Errorln(err)
 		return nil, err
