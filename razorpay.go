@@ -50,7 +50,7 @@ type Payment struct {
 	Vpa            interface{} `json:"vpa"`
 	Email          string      `json:"email"`
 	Contact        string      `json:"contact"`
-	Notes          struct {
+	Notes struct {
 		MerchantOrderID string `json:"merchant_order_id"`
 	} `json:"notes"`
 	Fee              int         `json:"fee"`
@@ -67,7 +67,7 @@ type Refund struct {
 	Amount    int    `json:"amount"`
 	Currency  string `json:"currency"`
 	PaymentID string `json:"payment_id"`
-	Notes     struct {
+	Notes struct {
 	} `json:"notes"`
 	CreatedAt int `json:"created_at"`
 }
@@ -76,13 +76,13 @@ type Refund struct {
 type Refunds struct {
 	Count  int    `json:"count"`
 	Entity string `json:"entity"`
-	Items  []struct {
+	Items []struct {
 		ID        string `json:"id"`
 		Entity    string `json:"entity"`
 		Amount    int    `json:"amount"`
 		Currency  string `json:"currency"`
 		PaymentID string `json:"payment_id"`
-		Notes     struct {
+		Notes struct {
 		} `json:"notes"`
 		CreatedAt int `json:"created_at"`
 	} `json:"items"`
@@ -196,11 +196,11 @@ func (r *RazorPay) GetOrderByID() (*Order, error) {
 */
 
 type NewOrder struct {
-	Amount         int    `json:"amount"`
-	Currency       string `json:"currency"`
-	Receipt        string `json:"receipt"`
-	PaymentCapture bool   `json:"payment_capture"`
-	Notes          string `json:"notes"`
+	Amount         int               `json:"amount"`
+	Currency       string            `json:"currency"`
+	Receipt        string            `json:"receipt"`
+	PaymentCapture bool              `json:"payment_capture"`
+	Notes          map[string]string `json:"notes"`
 }
 
 //CreateOrder Create an order
