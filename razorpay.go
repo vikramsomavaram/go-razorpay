@@ -36,7 +36,7 @@ type Payment struct {
 	Amount         int         `json:"amount"`
 	Currency       string      `json:"currency"`
 	Status         string      `json:"status"`
-	OrderID        interface{} `json:"order_id"`
+	OrderID        string      `json:"order_id"`
 	InvoiceID      interface{} `json:"invoice_id"`
 	International  bool        `json:"international"`
 	Method         string      `json:"method"`
@@ -50,7 +50,7 @@ type Payment struct {
 	Vpa            interface{} `json:"vpa"`
 	Email          string      `json:"email"`
 	Contact        string      `json:"contact"`
-	Notes struct {
+	Notes          struct {
 		MerchantOrderID string `json:"merchant_order_id"`
 	} `json:"notes"`
 	Fee              int         `json:"fee"`
@@ -67,7 +67,7 @@ type Refund struct {
 	Amount    int    `json:"amount"`
 	Currency  string `json:"currency"`
 	PaymentID string `json:"payment_id"`
-	Notes struct {
+	Notes     struct {
 	} `json:"notes"`
 	CreatedAt int `json:"created_at"`
 }
@@ -76,13 +76,13 @@ type Refund struct {
 type Refunds struct {
 	Count  int    `json:"count"`
 	Entity string `json:"entity"`
-	Items []struct {
+	Items  []struct {
 		ID        string `json:"id"`
 		Entity    string `json:"entity"`
 		Amount    int    `json:"amount"`
 		Currency  string `json:"currency"`
 		PaymentID string `json:"payment_id"`
-		Notes struct {
+		Notes     struct {
 		} `json:"notes"`
 		CreatedAt int `json:"created_at"`
 	} `json:"items"`
