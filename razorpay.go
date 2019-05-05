@@ -194,6 +194,96 @@ func (r *RazorPay) GetOrderByID() (*Order, error) {
 	return orderresp, nil
 }
 */
+//PaymentLink payment link request json data structure
+type PaymentLink struct {
+	Customer 	Customer 	  `json:"customer"`
+	Type        string        `json:"type"`
+	ViewLess    int           `json:"view_less"`
+	Amount      int           `json:"amount"`
+	Currency    string        `json:"currency"`
+	Description string        `json:"description"`
+	ExpireBy    int           `json:"expire_by,omitempty"`
+	CustomerID 	string        `json:"customer_id,omitempty"`
+	SmsNotify	string        `json:"sms_notify,omitempty"`
+	EmailNotify	string        `json:"email_notify,omitempty"`
+	Date		int           `json:"date,omitempty"`
+	Terms		string        `json:"terms,omitempty"`
+	Notes		[]interface{} `json:"notes,omitempty"`
+}
+
+type Customer struct {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Contact string `json:"contact"`
+}
+
+//PaymentLinkResponse link response json data structure
+type PaymentLinkResponse struct {
+	ID              string      `json:"id"`
+	Entity          string      `json:"entity"`
+	Receipt         interface{} `json:"receipt"`
+	CustomerID      string      `json:"customer_id"`
+	CustomerDetails struct {
+		Name           string      `json:"name"`
+		Email          string      `json:"email"`
+		Contact        string      `json:"contact"`
+		BillingAddress interface{} `json:"billing_address"`
+	} `json:"customer_details"`
+	OrderID             string        `json:"order_id"`
+	LineItems           []interface{} `json:"line_items"`
+	PaymentID           interface{}   `json:"payment_id"`
+	Status              string        `json:"status"`
+	ExpireBy            interface{}   `json:"expire_by"`
+	IssuedAt            int           `json:"issued_at"`
+	PaidAt              interface{}   `json:"paid_at"`
+	CancelledAt         interface{}   `json:"cancelled_at"`
+	ExpiredAt           interface{}   `json:"expired_at"`
+	SmsStatus           string        `json:"sms_status"`
+	EmailStatus         string        `json:"email_status"`
+	Date                int           `json:"date"`
+	Terms               interface{}   `json:"terms"`
+	PartialPayment      bool          `json:"partial_payment"`
+	GrossAmount         int           `json:"gross_amount"`
+	TaxAmount           int           `json:"tax_amount"`
+	Amount              int           `json:"amount"`
+	AmountPaid          int           `json:"amount_paid"`
+	AmountDue           int           `json:"amount_due"`
+	Currency            string        `json:"currency"`
+	Description         string        `json:"description"`
+	Notes               []interface{} `json:"notes"`
+	Comment             interface{}   `json:"comment"`
+	ShortURL            string        `json:"short_url"`
+	ViewLess            bool          `json:"view_less"`
+	BillingStart        interface{}   `json:"billing_start"`
+	BillingEnd          interface{}   `json:"billing_end"`
+	Type                string        `json:"type"`
+	GroupTaxesDiscounts bool          `json:"group_taxes_discounts"`
+	UserID              interface{}   `json:"user_id"`
+	CreatedAt           int           `json:"created_at"`
+}
+
+func (r *RazorPay) CreatePaymentLink(paylink PaymentLink) (*PaymentLinkResponse, error) {
+	paylinkresp := new(PaymentLinkResponse) 
+	createreqjson, err := json.Marshal(&paylink)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	resp, err := r.call("CreatePaymentLink", createreqjson, "", nil)
+	json.Unmarshal(resp, paylinkresp)
+	return paylinkresp, err
+}
+
+// func (r *RazorPay) GetPaymentLink(order NewOrder) (*Order, error) {
+// 
+// }
+// 
+// func (r *RazorPay) SendPaymentLink(order NewOrder) (*Order, error) {
+// 
+// }
+// 
+// func (r *RazorPay) CancelPaymentLink(order NewOrder) (*Order, error) {
+// 
+// }
 
 type NewOrder struct {
 	Amount         int               `json:"amount"`
@@ -234,6 +324,10 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "GetPaymentByID":
 		rmethod = "GET"
 		rurl = APIURL + "payments/" + pathparams
+	case "CreatePaymentLink":
+		rmethod = "POST"
+		rurl = APIURL + "invoices"
+
 	default:
 		err := errors.New("Invalid Method/Operation")
 		return nil, err
