@@ -112,26 +112,6 @@ func New(APIKey string, apiSecret string) *RazorPay {
 }
 
 /*
-//GetPayments Retrieve multiple payments
-func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) []Payment {
-	paymentresp := new(Payment)
-	resp, err := r.call("GetPayments", nil, urlparams)
-	json.Unmarshal(resp, paymentresp)
-	return paymentresp, nil
-}
-
-
-
-//CapturePayment Capture a payment
-func (r *RazorPay) CapturePayment() (*Payment, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
 //Refund issue refund
 func (r *RazorPay) Refund() (*Refund, error) {
 	orderresp := new(Order)
@@ -287,13 +267,6 @@ func (r *RazorPay) CreateOrder(order NewOrder) (*Order, error) {
 	return orderresp, err
 }
 
-//GetPaymentByID Retrieve a Payment by ID
-func (r *RazorPay) GetPaymentByID(id string) (*Payment, error) {
-	paymentresp := new(Payment)
-	resp, err := r.call("GetPaymentByID", nil, id, nil)
-	json.Unmarshal(resp, paymentresp)
-	return paymentresp, err
-}
 
 func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
 	var rurl string
@@ -302,9 +275,6 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "CreateOrder":
 		rmethod = "POST"
 		rurl = APIURL + "orders"
-	case "GetPaymentByID":
-		rmethod = "GET"
-		rurl = APIURL + "payments/" + pathparams
 	case "CreatePaymentLink":
 		rmethod = "POST"
 		rurl = APIURL + "invoices"
@@ -317,6 +287,15 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "CancelPaymentLink":
 		rmethod = "POST"
 		rurl = APIURL + "invoices/" + pathparams
+	case "CreatePayment":
+		rmethod = "POST"
+		rurl = APIURL + "payments/" + pathparams
+	case "GetPaymentByID":
+		rmethod = "GET"
+		rurl = APIURL + "payment/" + pathparams
+	case "GetPayments":
+		rmethod = "GET"
+		rurl = APIURL + "payments"
 	default:
 		err := errors.New("Invalid Method/Operation")
 		return nil, err
