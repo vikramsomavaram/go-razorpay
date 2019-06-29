@@ -110,55 +110,6 @@ func New(APIKey string, apiSecret string) *RazorPay {
 	return &RazorPay{apikey: APIKey, apisecret: apiSecret}
 }
 
-/*
-//Refund issue refund
-func (r *RazorPay) Refund() (*Refund, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-//GetRefundsByPaymentID Retrieve multiple refunds of a payment
-func (r *RazorPay) GetRefundsByPaymentID(id string) (*Refunds, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetRefundByPaymentID(id string) (*Refund, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetRefunds() (*Refunds, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetRefundByID(id string) (*Refund, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-*/
 //PaymentLink payment link request json data structure
 type PaymentLink struct {
 	Customer 	Customer 	  `json:"customer"`
@@ -237,6 +188,10 @@ type NewOrder struct {
 	Receipt        string            `json:"receipt"`
 	PaymentCapture bool              `json:"payment_capture"`
 	Notes          map[string]string `json:"notes"`
+}
+
+type Data struct {
+	Amount	int	`json:"amount"`
 }
 
 

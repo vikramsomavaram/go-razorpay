@@ -1,5 +1,10 @@
 package razorpay
 
+import (
+	"encoding/json"
+	"log"
+)
+
 //CreatePaymentLink Create a new payment link
 func (r *RazorPay) CreatePaymentLink(paylink PaymentLink) (*PaymentLinkResponse, error) {
 	paylinkresp := new(PaymentLinkResponse) 

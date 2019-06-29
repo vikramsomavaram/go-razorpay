@@ -7,9 +7,13 @@ import (
 )
 
 //CapturePayment Capture a payment
-func (r *RazorPay) CapturePayment(id string, amount string) (*Payment, error) {
+func (r *RazorPay) CapturePayment(id string, data Data) (*Payment, error) {
 	paymentresp := new(Payment)
-	resp, err := r.call("CapturePayment", nil, id+"/capture", nil)
+	createreqjson, err := json.Marshal(data)
+	if err != nil{
+		return nil, err
+	}
+	resp, err := r.call("CapturePayment", createreqjson, id+"/capture", nil)
 	if err != nil{
 		return nil, err
 	}
