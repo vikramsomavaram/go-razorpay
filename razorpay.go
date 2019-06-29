@@ -2,7 +2,6 @@ package razorpay
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
@@ -159,20 +158,6 @@ func (r *RazorPay) GetRefundByID(id string) (*Refund, error) {
 	return orderresp, nil
 }
 
-
-func (r *RazorPay) GetOrders() (*Order, error) {
-	orderresp := new(Order)
-	resp, err := r.call("GetOrders", nil, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetOrderByID() (*Order, error) {
-	orderresp := new(Order)
-	resp, err := r.call("GetOrderByID", nil, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
 */
 //PaymentLink payment link request json data structure
 type PaymentLink struct {
@@ -254,18 +239,6 @@ type NewOrder struct {
 	Notes          map[string]string `json:"notes"`
 }
 
-//CreateOrder Create an order
-func (r *RazorPay) CreateOrder(order NewOrder) (*Order, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	resp, err := r.call("CreateOrder", createreqjson, "", nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, err
-}
 
 
 func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
@@ -287,7 +260,7 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "CancelPaymentLink":
 		rmethod = "POST"
 		rurl = APIURL + "invoices/" + pathparams
-	case "CreatePayment":
+	case "CapturePayment":
 		rmethod = "POST"
 		rurl = APIURL + "payments/" + pathparams
 	case "GetPaymentByID":

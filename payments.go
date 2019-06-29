@@ -1,30 +1,54 @@
 package razorpay
 
+import (
+	"encoding/json"
+	"strconv"
+	"time"
+)
+
 //CapturePayment Capture a payment
-func (r *RazorPay) CapturePayment(id string) (*Payment, error) {
+func (r *RazorPay) CapturePayment(id string, amount string) (*Payment, error) {
 	paymentresp := new(Payment)
-	resp, err := r.call("CreatePayment", nil, id + "/capture", nil)
-	json.Unmarshal(resp, paymentresp)
-	return paymentresp, nil
+	resp, err := r.call("CapturePayment", nil, id+"/capture", nil)
+	if err != nil{
+		return nil, err
+	}
+	err = json.Unmarshal(resp, paymentresp)
+	if err != nil{
+		return nil, err
+	}
+	return paymentresp, err
 }
 
 //GetPaymentByID Fetch a Payment by ID
 func (r *RazorPay) GetPaymentByID(id string) (*Payment, error) {
 	paymentresp := new(Payment)
 	resp, err := r.call("GetPaymentByID", nil, id, nil)
-	json.Unmarshal(resp, paymentresp)
+	if err != nil{
+		return nil, err
+	}
+	err = json.Unmarshal(resp, paymentresp)
+	if err != nil{
+		return nil, err
+	}
 	return paymentresp, err
 }
 
 //GetPayments Fetch multiple payments
-func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) []Payment {
-	paymentresp := new(Payment)
-	resp, err := r.call("GetPayments", nil, urlparams)
-	json.Unmarshal(resp, paymentresp)
+func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) (*[]Payment, error) {
+	paymentresp := new([]Payment)
+	queryparams := make(map[string]string)
+	queryparams["from"]= strconv.Itoa(int(from.Unix()))
+	queryparams["to"]= strconv.Itoa(int(to.Unix()))
+	queryparams["count"]= strconv.Itoa(count)
+	queryparams["skip"]= strconv.Itoa(skip)
+	resp, err := r.call("GetPayments", nil, "", queryparams)
+	if err != nil{
+		return nil, err
+	}
+	err = json.Unmarshal(resp, paymentresp)
+	if err != nil{
+		return nil, err
+	}
 	return paymentresp, nil
 }
-
-
-
-
-
