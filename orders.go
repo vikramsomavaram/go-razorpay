@@ -24,8 +24,8 @@ func (r *RazorPay) CreateOrder(order NewOrder) (*Order, error) {
 }
 
 //GetOrders Fetch Multiple Orders
-func (r *RazorPay) GetOrders(from time.Time, to time.Time, count int, skip int, authorized string, receipt string) (*[]Order, error) {
-	orderresp := new([]Order)
+func (r *RazorPay) GetOrders(from time.Time, to time.Time, count int, skip int, authorized string, receipt string) (*[]Orders, error) {
+	orderresp := new([]Orders)
 	queryparams := make(map[string]string)
 	queryparams["from"]= strconv.Itoa(int(from.Unix()))
 	queryparams["to"]= strconv.Itoa(int(to.Unix()))
@@ -41,7 +41,7 @@ func (r *RazorPay) GetOrders(from time.Time, to time.Time, count int, skip int, 
 	if err != nil{
 		return nil, err
 	}
-	return orderresp, nil
+	return orderresp, err
 }
 
 //GetOrderByID Fetch an Order with Id
@@ -55,5 +55,5 @@ func (r *RazorPay) GetOrderByID(id string) (*Order, error) {
 	if err != nil{
 		return nil, err
 	}
-	return orderresp, nil
+	return orderresp, err
 }

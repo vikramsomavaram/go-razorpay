@@ -195,7 +195,6 @@ type Data struct {
 }
 
 
-
 func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
 	var rurl string
 	var rmethod string
@@ -206,6 +205,9 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "GetOrders":
 		rmethod = "GET"
 		rurl = APIURL + "orders"
+	case "GetOrderByID":
+		rmethod = "GET"
+		rurl = APIURL + "orders" + pathparams
 	case "CreatePaymentLink":
 		rmethod = "POST"
 		rurl = APIURL + "invoices"
@@ -226,7 +228,19 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 		rurl = APIURL + "payment/" + pathparams
 	case "GetPayments":
 		rmethod = "GET"
-		rurl = APIURL + "payments"
+		rurl = APIURL + "payments/"
+	case "CreateRefund":
+		rmethod = "POST"
+        rurl = APIURL + "payments/" + pathparams
+	case "GetRefunds":
+		rmethod = "GET"
+		rurl = APIURL + "refunds/"
+	case "GetRefundsByPaymentID":
+		rmethod = "GET"
+		rurl = APIURL + "payments/" + pathparams
+	case "GetRefundByID":
+		rmethod = "GET"
+		rurl = APIURL + "refunds/" + pathparams
 	default:
 		err := errors.New("Invalid Method/Operation")
 		return nil, err

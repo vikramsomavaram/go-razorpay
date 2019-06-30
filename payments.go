@@ -39,8 +39,8 @@ func (r *RazorPay) GetPaymentByID(id string) (*Payment, error) {
 }
 
 //GetPayments Fetch multiple payments
-func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) (*[]Payment, error) {
-	paymentresp := new([]Payment)
+func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) (*[]Payments, error) {
+	paymentresp := new([]Payments)
 	queryparams := make(map[string]string)
 	queryparams["from"]= strconv.Itoa(int(from.Unix()))
 	queryparams["to"]= strconv.Itoa(int(to.Unix()))
@@ -54,5 +54,5 @@ func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int
 	if err != nil{
 		return nil, err
 	}
-	return paymentresp, nil
+	return paymentresp, err
 }
