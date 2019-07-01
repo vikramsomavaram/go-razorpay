@@ -1,5 +1,10 @@
 package razorpay
 
+import (
+	"encoding/json"
+	"log"
+)
+
 //CreatePaymentLink Create a new payment link
 func (r *RazorPay) CreatePaymentLink(paylink PaymentLink) (*PaymentLinkResponse, error) {
 	paylinkresp := new(PaymentLinkResponse) 
@@ -8,7 +13,10 @@ func (r *RazorPay) CreatePaymentLink(paylink PaymentLink) (*PaymentLinkResponse,
 		log.Fatalln(err)
 	}
 	resp, err := r.call("CreatePaymentLink", createreqjson, "", nil)
-	json.Unmarshal(resp, paylinkresp)
+	err = json.Unmarshal(resp, paylinkresp)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	return paylinkresp, err
 }
 
@@ -16,7 +24,10 @@ func (r *RazorPay) CreatePaymentLink(paylink PaymentLink) (*PaymentLinkResponse,
 func (r *RazorPay) GetPaymentLink(id string) (*PaymentLinkResponse, error) {
 	getidresp := new(PaymentLinkResponse)
 	resp, err := r.call("GetPaymentLink", nil, id, nil)
-	json.Unmarshal(resp, getidresp)
+	err = json.Unmarshal(resp, getidresp)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	return getidresp, err
 }
 
@@ -25,7 +36,10 @@ func (r *RazorPay) SendPaymentLink(id string, medium string) (bool, error) {
 	sendresp := new(Response)
 	id = id+"/notify_by/"+medium
 	resp, err := r.call("SendPaymentLink", nil, id, nil)
-	json.Unmarshal(resp, sendresp)
+	err = json.Unmarshal(resp, sendresp)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	return sendresp.Success, err
 }
 
@@ -33,7 +47,9 @@ func (r *RazorPay) SendPaymentLink(id string, medium string) (bool, error) {
 func (r *RazorPay) CancelPaymentLink(id string) (string, error) {
 	paylinkresp := new(PaymentLinkResponse) 
 	resp, err := r.call("CancelPaymentLink", nil, id + "/cancel", nil)
-	json.Unmarshal(resp, paylinkresp)
+	err = json.Unmarshal(resp, paylinkresp)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	return paylinkresp.Status, err
-
 }

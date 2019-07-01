@@ -2,7 +2,6 @@ package razorpay
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
@@ -111,89 +110,6 @@ func New(APIKey string, apiSecret string) *RazorPay {
 	return &RazorPay{apikey: APIKey, apisecret: apiSecret}
 }
 
-/*
-//GetPayments Retrieve multiple payments
-func (r *RazorPay) GetPayments(from time.Time, to time.Time, count int, skip int) []Payment {
-	paymentresp := new(Payment)
-	resp, err := r.call("GetPayments", nil, urlparams)
-	json.Unmarshal(resp, paymentresp)
-	return paymentresp, nil
-}
-
-
-
-//CapturePayment Capture a payment
-func (r *RazorPay) CapturePayment() (*Payment, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-//Refund issue refund
-func (r *RazorPay) Refund() (*Refund, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-//GetRefundsByPaymentID Retrieve multiple refunds of a payment
-func (r *RazorPay) GetRefundsByPaymentID(id string) (*Refunds, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetRefundByPaymentID(id string) (*Refund, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetRefunds() (*Refunds, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetRefundByID(id string) (*Refund, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	resp, err := r.call("CreateOrder", createreqjson, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-
-func (r *RazorPay) GetOrders() (*Order, error) {
-	orderresp := new(Order)
-	resp, err := r.call("GetOrders", nil, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-
-func (r *RazorPay) GetOrderByID() (*Order, error) {
-	orderresp := new(Order)
-	resp, err := r.call("GetOrderByID", nil, nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, nil
-}
-*/
 //PaymentLink payment link request json data structure
 type PaymentLink struct {
 	Customer 	Customer 	  `json:"customer"`
@@ -274,26 +190,10 @@ type NewOrder struct {
 	Notes          map[string]string `json:"notes"`
 }
 
-//CreateOrder Create an order
-func (r *RazorPay) CreateOrder(order NewOrder) (*Order, error) {
-	orderresp := new(Order)
-	orderreq := order
-	createreqjson, err := json.Marshal(&orderreq)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	resp, err := r.call("CreateOrder", createreqjson, "", nil)
-	json.Unmarshal(resp, orderresp)
-	return orderresp, err
+type Data struct {
+	Amount	int	`json:"amount"`
 }
 
-//GetPaymentByID Retrieve a Payment by ID
-func (r *RazorPay) GetPaymentByID(id string) (*Payment, error) {
-	paymentresp := new(Payment)
-	resp, err := r.call("GetPaymentByID", nil, id, nil)
-	json.Unmarshal(resp, paymentresp)
-	return paymentresp, err
-}
 
 func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
 	var rurl string
@@ -302,9 +202,12 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "CreateOrder":
 		rmethod = "POST"
 		rurl = APIURL + "orders"
-	case "GetPaymentByID":
+	case "GetOrders":
 		rmethod = "GET"
-		rurl = APIURL + "payments/" + pathparams
+		rurl = APIURL + "orders"
+	case "GetOrderByID":
+		rmethod = "GET"
+		rurl = APIURL + "orders" + pathparams
 	case "CreatePaymentLink":
 		rmethod = "POST"
 		rurl = APIURL + "invoices"
@@ -317,6 +220,27 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "CancelPaymentLink":
 		rmethod = "POST"
 		rurl = APIURL + "invoices/" + pathparams
+	case "CapturePayment":
+		rmethod = "POST"
+		rurl = APIURL + "payments/" + pathparams
+	case "GetPaymentByID":
+		rmethod = "GET"
+		rurl = APIURL + "payment/" + pathparams
+	case "GetPayments":
+		rmethod = "GET"
+		rurl = APIURL + "payments/"
+	case "CreateRefund":
+		rmethod = "POST"
+        rurl = APIURL + "payments/" + pathparams
+	case "GetRefunds":
+		rmethod = "GET"
+		rurl = APIURL + "refunds/"
+	case "GetRefundsByPaymentID":
+		rmethod = "GET"
+		rurl = APIURL + "payments/" + pathparams
+	case "GetRefundByID":
+		rmethod = "GET"
+		rurl = APIURL + "refunds/" + pathparams
 	default:
 		err := errors.New("Invalid Method/Operation")
 		return nil, err
