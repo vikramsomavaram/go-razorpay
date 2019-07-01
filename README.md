@@ -2,9 +2,9 @@
 
 The Razorpay Payment Gateway enables you to accept payments via debit card, credit card, netbanking (supports 3D Secure), UPI or through any of our supported wallets.
 
-Currently only supports few operations like payments, orders and refunds and rest are east to implement (PR's are welcome).
+Currently only supports few operations like payments, orders and refunds and rest are easy to implement (PR's are welcome).
 
-I know that this library could be structed / designed in a betterway but the current design serves the purpose for our internal projects.
+I know that this library could be structed / designed in a better way but the current design serves the purpose of our internal projects.
 
 ## Installation
 
@@ -26,5 +26,3 @@ Pull requests are welcome!
 ## License
 
 The Razorpay Golang SDK is released under the MIT License.
-
-## Changelog
