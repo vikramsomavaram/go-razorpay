@@ -195,13 +195,13 @@ type Data struct {
 }
 
 type Customer struct {
-	ID         string        `json:"id"`
-	Entity     string        `json:"entity"`
-	Name       string        `json:"name"`
-	Email      string        `json:"email"`
-	Contact    string        `json:"contact"`
-	Notes	   []interface{} `json:"notes,omitempty"`
-	CreatedAt  int           `json:"created_at"`
+	ID         string            `json:"id"`
+	Entity     string            `json:"entity"`
+	Name       string            `json:"name"`
+	Email      string            `json:"email"`
+	Contact    string            `json:"contact"`
+	Notes	   map[string]string `json:"notes,omitempty"`
+	CreatedAt  int           	 `json:"created_at"`
 }
 
 type Customers struct {
