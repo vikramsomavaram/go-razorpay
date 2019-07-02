@@ -210,6 +210,13 @@ type Customers struct {
 	Items  []Customer `json:"items"`
 }
 
+type CustomerInput struct {
+	Name       string            `json:"name"`
+	Email      string            `json:"email"`
+	Contact    string            `json:"contact"`
+	Notes	   map[string]string `json:"notes,omitempty"`
+}
+
 type Settlement struct{
 	ID         string        `json:"id"`
 	Entity     string        `json:"entity"`
@@ -273,9 +280,18 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "GetRefundByID":
 		rmethod = "GET"
 		rurl = APIURL + "refunds/" + pathparams
+	case "CreateCustomer":
+		rmethod = "POST"
+		rurl = APIURL + "customers"
+	case "EditCustomerByID":
+		rmethod = "PUT"
+		rurl = APIURL + "customers/" + pathparams
 	case "GetCustomerByID":
 		rmethod = "GET"
 		rurl = APIURL + "customers/" + pathparams
+	case "GetCustomers":
+		rmethod = "GET"
+		rurl = APIURL + "customers"
 	case "GetSettlements":
 		rmethod = "GET"
 		rurl = APIURL + "settlements"
