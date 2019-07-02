@@ -210,6 +210,23 @@ type Customers struct {
 	Items  []Customer `json:"items"`
 }
 
+type Settlement struct{
+	ID         string        `json:"id"`
+	Entity     string        `json:"entity"`
+	Amount	   int	         `json:"amount"`
+	Status     string        `json:"status"`
+	Fees       int           `json:"fees"` 
+	Tax        int           `json:"tax"`
+	Utr		   string	     `json:"utr"`
+	CreatedAt  int			 `json:"created_at"`	
+}
+
+type Settlements struct{
+	Entity string       `json:"entity"`
+	Count  int          `json:"count"`
+	Items  []Settlement `json:"items"`
+}
+
 func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, queryparams map[string]string) ([]byte, error) {
 	var rurl string
 	var rmethod string
@@ -259,6 +276,12 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 	case "GetCustomerByID":
 		rmethod = "GET"
 		rurl = APIURL + "customers/" + pathparams
+	case "GetSettlements":
+		rmethod = "GET"
+		rurl = APIURL + "settlements"
+	case "GetSettlementByID":
+		rmethod = "GET"
+		rurl = APIURL + "settlements/" + pathparams	
 	default:
 		err := errors.New("Invalid Method/Operation")
 		return nil, err
