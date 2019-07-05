@@ -270,7 +270,7 @@ func (r *RazorPay) call(operation string, reqbody []byte, pathparams string, que
 		rurl = APIURL + "payments/"
 	case "CreateRefund":
 		rmethod = "POST"
-        rurl = APIURL + "payments/" + pathparams
+    rurl = APIURL + "payments/" + pathparams
 	case "GetRefunds":
 		rmethod = "GET"
 		rurl = APIURL + "refunds/"
